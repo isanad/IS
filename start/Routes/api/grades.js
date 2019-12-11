@@ -8,7 +8,7 @@ const Grade = require('../../Models/Grade')
 //const validator = require('../../Validation/eventValid')
 
   //post a grade
- router.post  ("/", async (req, res) => {
+ router.post  ("/", authenticateUser ,async (req, res) => {
     try {
        const grade = await new Grade ({
         subject: req.body.subject,
@@ -22,7 +22,7 @@ const Grade = require('../../Models/Grade')
     }
 })
 
- router.get("/", async (req, res) => {
+ router.get("/",authenticateUser, async (req, res) => {
    const grades = await Grade.find();
    res.json({ data: grades });
  });
