@@ -12,6 +12,7 @@ router.post("/", async (req, res) => {
         .status(400)
         .send({ error: isValidated.error.details[0].message });
     }
+
     const grade = await new Grade({
       subject: req.body.subject,
       grade: req.body.grade,

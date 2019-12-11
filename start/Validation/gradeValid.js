@@ -17,10 +17,8 @@ module.exports = {
         .required()
     };
     return Joi.validate(request, createSchema);
-    }
-}
-
-module.exports = {
+    },
+    
     updateValidation: request => {
       const updateSchema = {
         subject: Joi.string()

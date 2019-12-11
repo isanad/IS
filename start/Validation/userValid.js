@@ -11,7 +11,7 @@ const Joi = require("joi");
     return Joi.validate(request, LoginSchema);
   }
 })*/
-  (module.exports = {
+  module.exports = {
     createValidation: request => {
       const createSchema = {
         name: Joi.string()
@@ -78,4 +78,4 @@ const Joi = require("joi");
 
       return Joi.validate(request, updateSchema);
     }
-  })
+  }
