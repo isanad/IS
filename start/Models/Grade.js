@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const GradeSchema = new Schema({
-  subjects: { type: String, required: true },
-  grade: { type: String, required: true },
+  subject: { type: String, required: true},
+  grade: { type: String, required: true},
   
 })
 

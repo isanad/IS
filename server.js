@@ -28,19 +28,22 @@ app.use((request, response, next) => {
 const grades = require('./start/Routes/api/grades')
 
  app.get("/", (req, res) => {
-  res.send(`<h1>Welcome Team404</h1>
-   <a href ="start\Routes\api\grades">Grades</a> `);
+  res.send(`<h1>Welcome</h1>
+   <a href ="/Routes/api/grades">Grade</a> `);
 });
 
-app.use('start\Routes\api\grades.js', grades)
+app.use('/Routes/api/grades', grades)
 
 
 app.use((req, res) => {
   res.status(404).send({ err: 'We can not find what you are looking for' })
 })
 
+
+
+
 // opens the port at 3001
-app.listen(process.env.PORT || 3001, function () {
+app.listen(process.env.PORT || 3000, function () {
   console.log(
     'Express server listening on port %d in %s mode',
     this.address().port,
