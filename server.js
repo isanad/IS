@@ -20,7 +20,7 @@ if (process.env.NODE_ENV === 'production') {
 // Connect to mongo
 mongoose
   .connect(
-    'mongodb+srv://isanad:sebastien300@cluster0-ny6mj.mongodb.net/test?retryWrites=true'
+    'mongodb+srv://isanad:isanad@cluster0-bvkba.mongodb.net/test?retryWrites=true&w=majority'
   )
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.log(err))
@@ -34,14 +34,14 @@ app.use((request, response, next) => {
   Logger.log(`${request.method} => ${request.originalUrl}`)
   next()
 })
-const events = require('./Start/Routes/api/events')
+const grades = require('./start/Routes/api/grades')
 
  app.get("/", (req, res) => {
   res.send(`<h1>Welcome Team404</h1>
-   <a href ="/Routes/api/events">Events</a> `);
+   <a href ="/Routes/api/grades">Grades</a> `);
 });
 
-app.use('/Routes/api/events', events)
+app.use('/Routes/api/grades', grades)
 
 
 app.use((req, res) => {
