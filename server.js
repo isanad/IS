@@ -26,13 +26,18 @@ app.use((request, response, next) => {
 })
 
 const grades = require('./start/Routes/api/grades')
+const users = require('./start/Routes/api/users')
+
 
  app.get("/", (req, res) => {
   res.send(`<h1>Welcome</h1>
-   <a href ="/Routes/api/grades">Grade</a> `);
+   <a href ="/Routes/api/grades">Grade</a>
+   <a href ="/Routes/api/users">User</a> 
+   `);
 });
 
 app.use('/Routes/api/grades', grades)
+app.use('/Routes/api/users', users)
 
 
 app.use((req, res) => {

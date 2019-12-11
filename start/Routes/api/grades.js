@@ -12,7 +12,8 @@ const Grade = require('../../Models/Grade')
     try {
        const grade = await new Grade ({
         subject: req.body.subject,
-        grade: req.body.grade
+        grade: req.body.grade,
+        user_id: req.body.user_id
       }).save()
    return res.json({ data: grade })
     }catch (error) {
