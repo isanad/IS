@@ -1,11 +1,14 @@
 const express = require('express')
 const router = express.Router()
 //const joi = require('joi')
+const User = require('../../Models/User')
+const authenticateUser = require('../../middleware/authenticate')
 const Grade = require('../../Models/Grade')
+
 //const validator = require('../../Validation/eventValid')
 
   //post a grade
- router.post("/", async (req, res) => {
+ router.post  ("/", async (req, res) => {
     try {
        const grade = await new Grade ({
         subject: req.body.subject,
