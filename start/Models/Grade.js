@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const EventSchema = new Schema({
+const GradeSchema = new Schema({
   eventName: { type: String, required: true },
   organizer: { type: String, required: true },
   location: { type: String, required: true },
@@ -17,4 +17,4 @@ const EventSchema = new Schema({
   feedback: { type: Array, required: false }
 })
 
-module.exports = Event = mongoose.model('events', EventSchema)
+module.exports = Grade = mongoose.model('grades', GradeSchema)
