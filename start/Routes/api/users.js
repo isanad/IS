@@ -8,45 +8,6 @@ const User = require('../../Models/User')
 const authenticateUser = require("../../middleware/authenticate");
 const validator = require('../../Validation/userValid')
 
-// register user
-router.post("/register", async (req, res) => {
-  try {
-    const isValidated = validator.createValidation(req.body);
-    if (isValidated.error)
-      return res
-        .status(400)
-        .send({ error: isValidated.error.details[0].message });
-    const {
-      email,
-      age,
-      name,
-      password,
-      username,
-      phoneNumber,
-      userType,
-    } = req.body;
-    const user = await User.findOne({ email });
-    if (user) return res.status(400).json({ error: "Email already exists" });
-    const user1 = await User.findOne({ username });
-    if (user1)
-      return res.status(400).json({ error: "username already exists" });
-
-    //const salt = bcrypt.genSaltSync(10);
-    //const hashedPassword = bcrypt.hashSync(password, salt);
-    const newUser = await new User({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      age: req.body.age,
-      phoneNumber: req.body.phoneNumber,
-      userType: req.body.userType,
-    }).save();
-    //sendNotif(req.body.email, "Welcome to lirten hub", "Registration");
-    return res.json({ data: newUser });
-  } catch (error) {
-    console.log(error);
-  }
-});
 //login user
 router.post("/login",authenticateUser, async (req, res) => {
   try {
@@ -69,7 +30,7 @@ router.post("/login",authenticateUser, async (req, res) => {
 });
 
 //post a user
-router.post("/", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const isValidated = validator.createValidation(req.body);
     if (isValidated.error) {
