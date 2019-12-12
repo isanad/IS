@@ -20,17 +20,10 @@ module.exports = {
 
   updateValidation: request => {
     const updateSchema = {
-      subject: Joi.string().valid([
-        "math",
-        "chemistry",
-        "english"
-      ]),
       grade: Joi.number()
         .min(0)
-        .max(100),
-      username: Joi.string()
-        .min(1)
-        .max(1000)
+        .max(100)
+        .required()
     };
     return Joi.validate(request, updateSchema);
   }
