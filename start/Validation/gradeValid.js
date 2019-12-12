@@ -17,23 +17,20 @@ module.exports = {
         .required()
     };
     return Joi.validate(request, createSchema);
-    },
-    
-    updateValidation: request => {
-      const updateSchema = {
-        subject: Joi.string()
-          .min(3)
-          .max(500)
-          .required(),
-        grade: Joi.number()
-          .min(0)
-          .max(100)
-          .required(),
-        user_id: Joi.number()
-          .min(1)
-          .max(1000)
-          .required()
-      };
-      return Joi.validate(request, updateSchema);
-      }
+  },
+
+  updateValidation: request => {
+    const updateSchema = {
+      subject: Joi.string()
+        .min(3)
+        .max(500),
+      grade: Joi.number()
+        .min(0)
+        .max(100),
+      user_id: Joi.number()
+        .min(1)
+        .max(1000),
+    };
+    return Joi.validate(request, updateSchema);
   }
+};

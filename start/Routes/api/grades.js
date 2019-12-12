@@ -39,6 +39,35 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+// Update user
+router.put("/update/:id", async (req, res) => {
+  try {
+    const isValidated = validator.updateValidation(req.body);
+    if (isValidated.error) {
+      return res
+        .status(400)
+        .send({ error: isValidated.error.details[0].message });
+    }
+
+    Grade.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true },
+      (err, model) => {
+        if (!err) {
+          return res.json({ data: model });
+        } else {
+          return res.json({
+            err
+          });
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 router.get("/", authenticateUser, async (req, res) => {
   const grades = await Grade.find();
   res.json({ data: grades });
