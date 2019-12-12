@@ -9,7 +9,6 @@ const validator = require("../../Validation/gradeValid");
 
 //Post a grade
 router.post("/", authenticateUser, async (req, res) => {
-  //const usertype = await jwt.decode(((req.headers.authorization.split(' '))[1],tokenKey), );
   const what = await jwt.decode(req.headers.authorization.split(" ")[1]);
   if (what.userType === "instructor") {
     try {
@@ -23,8 +22,30 @@ router.post("/", authenticateUser, async (req, res) => {
         subject: req.body.subject,
         grade: req.body.grade,
         username: req.body.username
-      }).save();
-      return res.json({ data: grade });
+      });
+     const user=  await User.findOne({ username: grade.username });
+     if(user.userType != "student"){
+       return res.json({msg:" this is not a student"})
+     }
+      const entry = await Grade.findOne({ username: grade.username });
+      if(entry == null){
+        console.log("aho")
+        grade.save();
+        return res.json({ data: grade });
+      }
+      const entrys= await Grade.findOne({ subject: grade.subject });
+      if(entrys == null){
+        console.log("aho")
+        grade.save();
+        return res.json({ data: grade });
+      }
+      if (entrys.subject === grade.subject) {
+        console.log("HERE")
+        return res.json({ msg: "duplicate entry" });
+      } else {
+        grade.save();
+        return res.json({ data: grade });
+      }
     } catch (error) {
       // We will be handling the error later
       console.log(error);
@@ -85,7 +106,8 @@ router.put("/update/:id", async (req, res) => {
 });
 
 router.get("/", authenticateUser, async (req, res) => {
-  const grades = await Grade.find();
+  const what = await jwt.decode(req.headers.authorization.split(" ")[1]);
+  const grades = await Grade.findOne({ username: what.username });
   res.json({ data: grades });
 });
 
