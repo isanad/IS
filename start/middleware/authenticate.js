@@ -4,26 +4,29 @@ const tokenKey = require('../config/keys_dev').secretOrKey
 
 const authenticateUser= async (req,res,next) =>{
     try{
-        const token = req.get('Authorization');
+        
+        const token = await jwt.verify((req.headers.authorization.split(' '))[1],tokenKey);
         if(!token){ 
+            console.log("soso")
             return res.status(401).send({
                 msg: "unauthorized"
             });
         }
 
-        const allegedUser = jwt.verify(req.get('Authorization'),tokenKey);
+        const allegedUser = await jwt.verify((req.headers.authorization.split(' '))[1],tokenKey);
         const confirmedUser = await User.findOne({_id: allegedUser.id});
         console.log(confirmedUser);
         req.user = confirmedUser;
         next();
     }catch(err){
-        console.log(err)
-        return res.status(401).send({
-            msg: "unauthorized"
-        });
+        return res.json({err})
+       // console.log(err)
+        //return res.status(401).send({
+         //   msg: "unauthorized"
+        };
     }
     
 
-}
+
 
 module.exports = authenticateUser

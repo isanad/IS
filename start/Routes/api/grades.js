@@ -2,11 +2,11 @@ const express = require('express')
 const router = express.Router()
 const joi = require('joi')
 const User = require('../../Models/User')
+const tokenKey = require('../../config/keys_dev').secretOrKey
 const authenticateUser = require('../../middleware/authenticate')
 const Grade = require('../../Models/Grade')
 
 const validator = require('../../Validation/gradeValid')
-
   //post a grade
  router.post  ("/", authenticateUser ,async (req, res) => {
   try {
