@@ -27,7 +27,8 @@ router.post(
           id: user.id,
           name: user.name,
           password: user.password,
-          email: user.email
+          email: user.email,
+          userType: user.userType
         };
         const token = jwt.sign(payload, tokenKey, { expiresIn: "1h" });
 

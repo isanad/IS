@@ -3,27 +3,34 @@ const router = express.Router();
 const User = require("../../Models/User");
 const authenticateUser = require("../../middleware/authenticate");
 const Grade = require("../../Models/Grade");
+const jwt = require("jsonwebtoken");
 
 const validator = require("../../Validation/gradeValid");
 
 //Post a grade
 router.post("/", authenticateUser, async (req, res) => {
-  try {
-    const isValidated = validator.createValidation(req.body);
-    if (isValidated.error) {
-      return res
-        .status(400)
-        .send({ error: isValidated.error.details[0].message });
+  //const usertype = await jwt.decode(((req.headers.authorization.split(' '))[1],tokenKey), );
+  const what = await jwt.decode(req.headers.authorization.split(" ")[1]);
+  if (what.userType === "instructor") {
+    try {
+      const isValidated = validator.createValidation(req.body);
+      if (isValidated.error) {
+        return res
+          .status(400)
+          .send({ error: isValidated.error.details[0].message });
+      }
+      const grade = await new Grade({
+        subject: req.body.subject,
+        grade: req.body.grade,
+        user_id: req.body.user_id
+      }).save();
+      return res.json({ data: grade });
+    } catch (error) {
+      // We will be handling the error later
+      console.log(error);
     }
-    const grade = await new Grade({
-      subject: req.body.subject,
-      grade: req.body.grade,
-      user_id: req.body.user_id
-    }).save();
-    return res.json({ data: grade });
-  } catch (error) {
-    // We will be handling the error later
-    console.log(error);
+  } else {
+    return res.json({ msg: "You dont have access" });
   }
 });
 
