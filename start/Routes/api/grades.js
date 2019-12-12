@@ -23,24 +23,24 @@ router.post("/", authenticateUser, async (req, res) => {
         grade: req.body.grade,
         username: req.body.username
       });
-     const user=  await User.findOne({ username: grade.username });
-     if(user.userType != "student"){
-       return res.json({msg:" this is not a student"})
-     }
+      const user = await User.findOne({ username: grade.username });
+      if (user.userType != "student") {
+        return res.json({ msg: " this is not a student" });
+      }
       const entry = await Grade.findOne({ username: grade.username });
-      if(entry == null){
-        console.log("aho")
+      if (entry == null) {
+        console.log("aho");
         grade.save();
         return res.json({ data: grade });
       }
-      const entrys= await Grade.findOne({ subject: grade.subject });
-      if(entrys == null){
-        console.log("aho")
+      const entrys = await Grade.findOne({ subject: grade.subject });
+      if (entrys == null) {
+        console.log("aho");
         grade.save();
         return res.json({ data: grade });
       }
       if (entrys.subject === grade.subject) {
-        console.log("HERE")
+        console.log("HERE");
         return res.json({ msg: "duplicate entry" });
       } else {
         grade.save();
@@ -107,6 +107,10 @@ router.put("/update/:id", async (req, res) => {
 
 router.get("/", authenticateUser, async (req, res) => {
   const what = await jwt.decode(req.headers.authorization.split(" ")[1]);
+  if (what.userType === "instructor" || what.userType === "teacher assistant") {
+    const grades = await Grade.find();
+    res.json({ data: grades });
+  }
   const grades = await Grade.findOne({ username: what.username });
   res.json({ data: grades });
 });
