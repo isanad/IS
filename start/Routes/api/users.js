@@ -55,6 +55,17 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// Delete a user
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const id = req.params.id
+    const deletedUser = await User.findByIdAndRemove(id)
+    return res.json(deletedUser + "was deleted successfully")
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 router.get("/", async (req, res) => {
   const users = await User.find();
   res.json({ data: users });
