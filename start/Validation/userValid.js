@@ -61,10 +61,7 @@ module.exports = {
         .max(500),
       phoneNumber: Joi.string()
         .min(1)
-        .max(12),
-      userType: Joi.string()
-        .min(3)
-        .max(500)
+        .max(12)
     };
 
     return Joi.validate(request, updateSchema);

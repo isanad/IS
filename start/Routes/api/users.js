@@ -79,6 +79,13 @@ router.delete("/delete/:id", async (req, res) => {
 
 // Update user
 router.put("/update/:id", async (req, res) => {
+
+  const what = await jwt.decode(req.headers.authorization.split(" ")[1]);
+  const user = await User.findOne({ username: what.username });
+  if(user.id != req.params.id){
+    return res.json({msg: "You cannot update another user's info"})
+  }
+
   try {
     const isValidated = validator.updateValidation(req.body);
     if (isValidated.error) {
