@@ -22,7 +22,7 @@ router.post("/", authenticateUser, async (req, res) => {
       const grade = await new Grade({
         subject: req.body.subject,
         grade: req.body.grade,
-        user_id: req.body.user_id
+        username: req.body.username
       }).save();
       return res.json({ data: grade });
     } catch (error) {
@@ -36,41 +36,51 @@ router.post("/", authenticateUser, async (req, res) => {
 
 // Delete a grade
 router.delete("/delete/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const deletedGrade = await User.findByIdAndRemove(id);
-    return res.json(deletedGrade + "was deleted successfully");
-  } catch (error) {
-    console.log(error);
+  const what = await jwt.decode(req.headers.authorization.split(" ")[1]);
+  if (what.userType === "instructor") {
+    try {
+      const id = req.params.id;
+      const deletedGrade = await User.findByIdAndRemove(id);
+      return res.json(deletedGrade + "was deleted successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    return res.json({ msg: "You dont have access" });
   }
 });
 
-// Update user
+// Update grade
 router.put("/update/:id", async (req, res) => {
-  try {
-    const isValidated = validator.updateValidation(req.body);
-    if (isValidated.error) {
-      return res
-        .status(400)
-        .send({ error: isValidated.error.details[0].message });
-    }
-
-    Grade.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true },
-      (err, model) => {
-        if (!err) {
-          return res.json({ data: model });
-        } else {
-          return res.json({
-            err
-          });
-        }
+  const what = await jwt.decode(req.headers.authorization.split(" ")[1]);
+  if (what.userType === "instructor") {
+    try {
+      const isValidated = validator.updateValidation(req.body);
+      if (isValidated.error) {
+        return res
+          .status(400)
+          .send({ error: isValidated.error.details[0].message });
       }
-    );
-  } catch (error) {
-    console.log(error);
+
+      Grade.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true },
+        (err, model) => {
+          if (!err) {
+            return res.json({ data: model });
+          } else {
+            return res.json({
+              err
+            });
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    return res.json({ msg: "You dont have access" });
   }
 });
 

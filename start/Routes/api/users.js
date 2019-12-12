@@ -25,7 +25,7 @@ router.post(
       if (match) {
         const payload = {
           id: user.id,
-          name: user.name,
+          username: user.username,
           password: user.password,
           email: user.email,
           userType: user.userType
