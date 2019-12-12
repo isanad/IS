@@ -1,17 +1,17 @@
-const express = require('express')
-const router = express.Router()
-const joi = require('joi')
+const express = require("express");
+const router = express.Router();
+const joi = require("joi");
 const jwt = require("jsonwebtoken");
 const tokenKey = require("../../config/keys").secretOrKey;
 //const sendNotif = require("../../utils/mailer");
-const User = require('../../Models/User')
+const User = require("../../Models/User");
 const authenticateUser = require("../../middleware/authenticate");
-const validator = require('../../Validation/userValid')
+const validator = require("../../Validation/userValid");
 
 // register user
 
 //login user
-router.post("/login",authenticateUser, async (req, res) => {
+router.post("/login", authenticateUser, async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -50,6 +50,46 @@ router.post("/register", async (req, res) => {
       userType: req.body.userType
     }).save();
     return res.json({ data: user });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// Delete a user
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const deletedUser = await User.findByIdAndRemove(id);
+    return res.json(deletedUser + "was deleted successfully");
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// Update user
+router.put("/update/:id", async (req, res) => {
+  try {
+    const isValidated = validator.updateValidation(req.body);
+    if (isValidated.error) {
+      return res
+        .status(400)
+        .send({ error: isValidated.error.details[0].message });
+    }
+
+    User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true },
+      (err, model) => {
+        if (!err) {
+          return res.json({ data: model });
+        } else {
+          return res.json({
+            err
+          });
+        }
+      }
+    );
   } catch (error) {
     console.log(error);
   }
