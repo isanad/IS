@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
-//const joi = require('joi')
+const joi = require('joi')
 const jwt = require("jsonwebtoken");
 const tokenKey = require("../../config/keys").secretOrKey;
 //const sendNotif = require("../../utils/mailer");
 const User = require('../../Models/User')
 const authenticateUser = require("../../middleware/authenticate");
-const validator = require('../../Validation/eventValid')
+const validator = require('../../Validation/userValid')
 
 // register user
 router.post("/register", async (req, res) => {
@@ -20,7 +20,7 @@ router.post("/register", async (req, res) => {
       email,
       age,
       name,
-      //password,
+      password,
       username,
       phoneNumber,
       userType,
@@ -36,6 +36,7 @@ router.post("/register", async (req, res) => {
     const newUser = await new User({
       name: req.body.name,
       email: req.body.email,
+      password: req.body.password,
       age: req.body.age,
       phoneNumber: req.body.phoneNumber,
       userType: req.body.userType,
@@ -57,6 +58,7 @@ router.post("/login",authenticateUser, async (req, res) => {
       const payload = {
         id: user.id,
         name: user.name,
+        password: user.password,
         email: user.email
       };
       const token = jwt.sign(payload, tokenKey, { expiresIn: "1h" });
@@ -65,26 +67,6 @@ router.post("/login",authenticateUser, async (req, res) => {
     } else return res.status(400).send({ password: "Wrong password" });
   } catch (e) {}
 });
-  //post a user
- /*router.post("/", async (req, res) => {
-    try {
-       const user = await new User ({
-        name: req.body.name,
-        email: req.body.email,
-        age: req.body.age,
-        phoneNumber: req.body.phoneNumber,
-        userType: req.body.userType
-      }).save()
-   return res.json({ data: user })
-    }catch (error) {
-      // We will be handling the error later
-      console.log(error)
-    }
-})*/
-const express = require("express");
-const router = express.Router();
-const User = require("../../Models/User");
-const validator = require("../../Validation/userValid");
 
 //post a user
 router.post("/", async (req, res) => {
