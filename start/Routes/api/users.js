@@ -1,35 +1,41 @@
 const express = require("express");
 const router = express.Router();
-const joi = require("joi");
 const jwt = require("jsonwebtoken");
 const tokenKey = require("../../config/keys").secretOrKey;
-//const sendNotif = require("../../utils/mailer");
 const User = require("../../Models/User");
 const authenticateUser = require("../../middleware/authenticate");
 const validator = require("../../Validation/userValid");
+const bcrypt = require("bcryptjs");
+const salt = 2;
 
 // register user
 
 //login user
-router.post("/login", authenticateUser, async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ email: "Email does not exist" });
-    //const match = bcrypt.compareSync(password, user.password);
-    if (match) {
-      const payload = {
-        id: user.id,
-        name: user.name,
-        password: user.password,
-        email: user.email
-      };
-      const token = jwt.sign(payload, tokenKey, { expiresIn: "1h" });
+router.post(
+  "/login", //authenticateUser,
+  async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res.json({ message: "Please enter all details" });
+      }
+      const user = await User.findOne({ email });
+      if (!user) return res.status(404).json({ email: "Email does not exist" });
+      const match = bcrypt.compare(password, user.password);
+      if (match) {
+        const payload = {
+          id: user.id,
+          name: user.name,
+          password: user.password,
+          email: user.email
+        };
+        const token = jwt.sign(payload, tokenKey, { expiresIn: "1h" });
 
-      return res.json({ token });
-    } else return res.status(400).send({ password: "Wrong password" });
-  } catch (e) {}
-});
+        return res.json({ token });
+      } else return res.status(400).send({ password: "Wrong password" });
+    } catch (e) {}
+  }
+);
 
 //register a user
 router.post("/register", async (req, res) => {
@@ -48,7 +54,12 @@ router.post("/register", async (req, res) => {
       age: req.body.age,
       phoneNumber: req.body.phoneNumber,
       userType: req.body.userType
-    }).save();
+    });
+
+    bcrypt.hash(user.password, salt, (err, hash) => {
+      user.password = hash;
+      user.save();
+    });
     return res.json({ data: user });
   } catch (error) {
     console.log(error);

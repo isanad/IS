@@ -7,7 +7,7 @@ const authenticateUser= async (req,res,next) =>{
         const token = req.get('Authorization');
         if(!token){ 
             return res.status(401).send({
-                msg: "unauthorized"
+                msg: "noh"
             });
         }
 
