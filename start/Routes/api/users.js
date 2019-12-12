@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const tokenKey = require('../../config/keys_dev').secretOrKey
+const tokenKey = require("../../config/keys_dev").secretOrKey;
 const User = require("../../Models/User");
 const authenticateUser = require("../../middleware/authenticate");
 const validator = require("../../Validation/userValid");
@@ -42,9 +42,7 @@ router.post("/register", async (req, res) => {
   try {
     const isValidated = validator.createValidation(req.body);
     if (isValidated.error) {
-      return res
-        .status(400)
-        .send({ error: isValidated.error.details[0].message });
+      return res.json({ error: isValidated.error.details[0].message });
     }
     const user = await new User({
       name: req.body.name,
@@ -60,6 +58,7 @@ router.post("/register", async (req, res) => {
       user.password = hash;
       user.save();
     });
+
     return res.json({ data: user });
   } catch (error) {
     console.log(error);
